@@ -130,12 +130,13 @@
             </Grid>
         </Border>
 
-        <!-- History -->
+        <!-- History Table -->
         <Border Grid.Row="2" 
                 BackgroundColor="{StaticResource SurfaceDark}" 
                 Padding="20">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -144,71 +145,79 @@
                        Text="Check History" 
                        FontSize="18" 
                        FontAttributes="Bold"
-                       Margin="0,0,0,10"
+                       Margin="0,0,0,15"
                        TextColor="{StaticResource TextLight}" />
 
-                <CollectionView Grid.Row="1" 
+                <!-- STATIC TABLE HEADER -->
+                <Grid Grid.Row="1" Padding="10,5" BackgroundColor="Transparent" Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*" />
+                        <ColumnDefinition Width="1.5*" />
+                        <ColumnDefinition Width="1.5*" />
+                        <ColumnDefinition Width="1.5*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" 
+                           Text="Time" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource TextLight}"
+                           HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" />
+
+                    <Label Grid.Column="1" 
+                           Text="Bluetooth" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource TextLight}"
+                           HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" />
+
+                    <Label Grid.Column="2" 
+                           Text="USB" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource TextLight}"
+                           HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" />
+
+                    <Label Grid.Column="3" 
+                           Text="Firewall" 
+                           FontAttributes="Bold" 
+                           TextColor="{StaticResource TextLight}"
+                           HorizontalOptions="Start"
+                           HorizontalTextAlignment="Start" />
+                </Grid>
+
+                <!-- SCROLLABLE TABLE BODY -->
+                <CollectionView Grid.Row="2" 
                                 ItemsSource="{Binding CheckHistory}"
                                 SelectionMode="None">
-                    <CollectionView.Header>
-                        <Grid Padding="10,5" BackgroundColor="{StaticResource SurfaceDark}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" 
-                                   Text="Time" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{StaticResource TextLight}"
-                                   HorizontalOptions="Start"
-                                   HorizontalTextAlignment="Start" />
-                            <Label Grid.Column="1" 
-                                   Text="Bluetooth" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{StaticResource TextLight}"
-                                   HorizontalOptions="Start"
-                                   HorizontalTextAlignment="Start" />
-                            <Label Grid.Column="2" 
-                                   Text="USB" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{StaticResource TextLight}"
-                                   HorizontalOptions="Start"
-                                   HorizontalTextAlignment="Start" />
-                            <Label Grid.Column="3" 
-                                   Text="Firewall" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{StaticResource TextLight}"
-                                   HorizontalOptions="Start"
-                                   HorizontalTextAlignment="Start" />
-                        </Grid>
-                    </CollectionView.Header>
-
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="10,5">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
                                 </Grid.ColumnDefinitions>
+
                                 <Label Grid.Column="0" 
                                        Text="{Binding CheckTime, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}"
                                        TextColor="{StaticResource TextLight}"
                                        HorizontalOptions="Start"
                                        HorizontalTextAlignment="Start" />
+
                                 <Label Grid.Column="1" 
                                        Text="{Binding BluetoothDisplay}" 
                                        TextColor="{Binding BluetoothColor}"
                                        HorizontalOptions="Start"
                                        HorizontalTextAlignment="Start" />
+
                                 <Label Grid.Column="2" 
                                        Text="{Binding UsbDisplay}" 
                                        TextColor="{Binding UsbColor}"
                                        HorizontalOptions="Start"
                                        HorizontalTextAlignment="Start" />
+
                                 <Label Grid.Column="3" 
                                        Text="{Binding FirewallDisplay}" 
                                        TextColor="{Binding FirewallColor}"
