@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ITAdmin.Maui.Views.LoginPage"
+             Title="IT Admin Login"
+             BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="0,20,0,30">
+            <Image Source="appicon.png" 
+                   HeightRequest="80" 
+                   WidthRequest="80" 
+                   HorizontalOptions="Center" />
+            <Label Text="IT Admin Utility" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource TextLight}"
+                   HorizontalOptions="Center" />
+            <Label Text="System Monitoring for macOS" 
+                   FontSize="16" 
+                   TextColor="{StaticResource TextMedium}"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Alternative: Side by side buttons with wider container -->
+        <Border Grid.Row="1" 
+       BackgroundColor="{StaticResource SurfaceDark}" 
+       VerticalOptions="Start"
+       HorizontalOptions="Center"
+       WidthRequest="500">
+
+            <VerticalStackLayout Spacing="20" Padding="40">
+
+                <!-- Username -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Username" 
+                   FontSize="14" 
+                   TextColor="{StaticResource TextMedium}" />
+                    <Entry x:Name="UsernameEntry"
+                   Placeholder="Enter username"
+                   Text="{Binding Username}"
+                   ReturnType="Next"
+                   TextColor="{StaticResource TextLight}"
+                   BackgroundColor="{StaticResource SurfaceDark}"
+                   PlaceholderColor="{StaticResource TextMedium}" />
+                </VerticalStackLayout>
+
+                <!-- Password -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Password" 
+                   FontSize="14" 
+                   TextColor="{StaticResource TextMedium}" />
+                    <Entry x:Name="PasswordEntry"
+                   Placeholder="Enter password"
+                   IsPassword="True"
+                   Text="{Binding Password}"
+                   ReturnType="Done"
+                   TextColor="{StaticResource TextLight}"
+                   BackgroundColor="{StaticResource SurfaceDark}"
+                   PlaceholderColor="{StaticResource TextMedium}" />
+                </VerticalStackLayout>
+
+                <!-- Buttons - Side by side with minimum widths -->
+                <Grid ColumnSpacing="20" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                    Text="Login"
+                    Command="{Binding LoginCommand}"
+                    MinimumWidthRequest="150"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+
+                    <Button Grid.Column="1"
+                    Text="Register"
+                    Command="{Binding RegisterCommand}"
+                    BackgroundColor="{StaticResource Success}"
+                    TextColor="{StaticResource TextLight}"
+                    MinimumWidthRequest="150"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+                </Grid>
+
+                <!-- Status Message -->
+                <Label Text="{Binding StatusMessage}"
+               TextColor="{Binding StatusColor}"
+               FontSize="14"
+               HorizontalOptions="Center"
+               IsVisible="{Binding IsStatusVisible}" />
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource Primary}" />
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

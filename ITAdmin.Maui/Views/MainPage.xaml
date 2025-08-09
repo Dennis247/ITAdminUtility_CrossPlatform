@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ITAdmin.Maui.Views.MainPage"
+             Title="IT Admin Dashboard"
+             BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                BackgroundColor="{StaticResource SurfaceDark}" 
+                Padding="20"
+                Margin="0,0,0,20">
+            <VerticalStackLayout Spacing="10">
+                <Label Text="{Binding WelcomeMessage}" 
+                       FontSize="20" 
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource TextLight}" />
+                <Label Text="System monitoring is active. Checks run every 30 seconds."
+                       TextColor="{StaticResource TextMedium}" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- System Status -->
+        <Border Grid.Row="1" 
+                BackgroundColor="{StaticResource SurfaceDark}" 
+                Padding="20"
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <HorizontalStackLayout Grid.Row="0" Spacing="10" Margin="0,0,0,20">
+                    <Label Text="Current System Status" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"
+                           TextColor="{StaticResource TextLight}" />
+                    <ActivityIndicator IsRunning="{Binding IsChecking}"
+                                       IsVisible="{Binding IsChecking}"
+                                       HeightRequest="20"
+                                       WidthRequest="20"
+                                       Color="{StaticResource Primary}" />
+                </HorizontalStackLayout>
+
+                <!-- Status Grid -->
+                <Grid Grid.Row="1" RowSpacing="15" ColumnSpacing="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Bluetooth Status -->
+                    <Label Grid.Row="0" Grid.Column="0" 
+                           Text="Bluetooth:" 
+                           FontSize="16"
+                           VerticalOptions="Center"
+                           TextColor="{StaticResource TextLight}" />
+                    <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Spacing="10">
+                        <Label Text="{Binding BluetoothStatus}" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{Binding BluetoothColor}"
+                               VerticalOptions="Center" />
+                        <BoxView Color="{Binding BluetoothColor}"
+                                 WidthRequest="20"
+                                 HeightRequest="20"
+                                 CornerRadius="10" />
+                    </HorizontalStackLayout>
+
+                    <!-- USB Status -->
+                    <Label Grid.Row="1" Grid.Column="0" 
+                           Text="USB:" 
+                           FontSize="16"
+                           VerticalOptions="Center"
+                           TextColor="{StaticResource TextLight}" />
+                    <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="10">
+                        <Label Text="{Binding UsbStatus}" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{Binding UsbColor}"
+                               VerticalOptions="Center" />
+                        <BoxView Color="{Binding UsbColor}"
+                                 WidthRequest="20"
+                                 HeightRequest="20"
+                                 CornerRadius="10" />
+                    </HorizontalStackLayout>
+
+                    <!-- Firewall Status -->
+                    <Label Grid.Row="2" Grid.Column="0" 
+                           Text="Firewall:" 
+                           FontSize="16"
+                           VerticalOptions="Center"
+                           TextColor="{StaticResource TextLight}" />
+                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="10">
+                        <Label Text="{Binding FirewallStatus}" 
+                               FontSize="16" 
+                               FontAttributes="Bold"
+                               TextColor="{Binding FirewallColor}"
+                               VerticalOptions="Center" />
+                        <BoxView Color="{Binding FirewallColor}"
+                                 WidthRequest="20"
+                                 HeightRequest="20"
+                                 CornerRadius="10" />
+                    </HorizontalStackLayout>
+
+                    <!-- Last Check -->
+                    <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                           Text="{Binding LastCheckTime}"
+                           FontSize="14"
+                           TextColor="{StaticResource TextMedium}"
+                           Margin="0,10,0,0" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- History -->
+        <Border Grid.Row="2" 
+                BackgroundColor="{StaticResource SurfaceDark}" 
+                Padding="20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" 
+                       Text="Check History" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       Margin="0,0,0,10"
+                       TextColor="{StaticResource TextLight}" />
+
+                <CollectionView Grid.Row="1" 
+                                ItemsSource="{Binding CheckHistory}"
+                                SelectionMode="None">
+                    <CollectionView.Header>
+                        <Grid Padding="10,5" BackgroundColor="{StaticResource SurfaceDark}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="Time" FontAttributes="Bold" TextColor="{StaticResource TextLight}" />
+                            <Label Grid.Column="1" Text="Bluetooth" FontAttributes="Bold" TextColor="{StaticResource TextLight}" />
+                            <Label Grid.Column="2" Text="USB" FontAttributes="Bold" TextColor="{StaticResource TextLight}" />
+                            <Label Grid.Column="3" Text="Firewall" FontAttributes="Bold" TextColor="{StaticResource TextLight}" />
+                        </Grid>
+                    </CollectionView.Header>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="10,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding CheckTime, StringFormat='{0:yyyy-MM-dd HH:mm:ss}'}"
+                                       TextColor="{StaticResource TextLight}" />
+                                <Label Grid.Column="1" Text="{Binding BluetoothDisplay}" TextColor="{Binding BluetoothColor}" />
+                                <Label Grid.Column="2" Text="{Binding UsbDisplay}" TextColor="{Binding UsbColor}" />
+                                <Label Grid.Column="3" Text="{Binding FirewallDisplay}" TextColor="{Binding FirewallColor}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <Label Text="No check history available yet."
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               TextColor="{StaticResource TextMedium}" />
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </Border>
+
+        <!-- Buttons -->
+        <HorizontalStackLayout Grid.Row="3" 
+                               HorizontalOptions="Center" 
+                               Spacing="20"
+                               Margin="0,20,0,0">
+            <Button Text="Refresh Now"
+                    Command="{Binding RefreshCommand}"
+                    WidthRequest="150" />
+
+            <Button Text="Logout"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="{StaticResource Danger}"
+                    TextColor="{StaticResource TextLight}"
+                    WidthRequest="150" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

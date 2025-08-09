@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ITAdmin.Maui.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Dark Theme Colors -->
+            <Color x:Key="Primary">#90CAF9</Color>
+            <!-- Light Blue -->
+            <Color x:Key="PrimaryDark">#1976D2</Color>
+            <!-- Same or darker shade -->
+            <Color x:Key="Accent">#FF4081</Color>
+            <!-- Pink remains vibrant -->
+            <Color x:Key="Success">#81C784</Color>
+            <!-- Soft green -->
+            <Color x:Key="Danger">#E57373</Color>
+            <!-- Softer red -->
+            <Color x:Key="Warning">#FFB74D</Color>
+            <!-- Warm orange -->
+
+            <!-- Backgrounds -->
+            <Color x:Key="BackgroundDark">#121212</Color>
+            <Color x:Key="SurfaceDark">#1E1E1E</Color>
+            <Color x:Key="TextLight">#FFFFFF</Color>
+            <Color x:Key="TextMedium">#E0E0E0</Color>
+
+            <!-- Default Button Style -->
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+                <Setter Property="CornerRadius" Value="5" />
+                <Setter Property="HeightRequest" Value="44" />
+            </Style>
+
+            <!-- Default Entry Style -->
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="{StaticResource SurfaceDark}" />
+                <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextMedium}" />
+                <Setter Property="HeightRequest" Value="44" />
+            </Style>
+
+            <!-- Headline Style -->
+            <Style x:Key="Headline" TargetType="Label">
+                <Setter Property="FontSize" Value="24" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource TextLight}" />
+            </Style>
+
+            <!-- SubHeadline Style -->
+            <Style x:Key="SubHeadline" TargetType="Label">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontAttributes" Value="None" />
+                <Setter Property="TextColor" Value="{StaticResource TextMedium}" />
+            </Style>
+
+            <!-- Page Background -->
+            <Style TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{StaticResource BackgroundDark}" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
