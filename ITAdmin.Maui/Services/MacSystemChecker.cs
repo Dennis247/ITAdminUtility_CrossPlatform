@@ -12,30 +12,71 @@ namespace ITAdmin.Maui.Services
             _logger = Log.ForContext<MacSystemChecker>();
         }
 
+        private string? FindBlueutilPath()
+        {
+            string[] possiblePaths =
+            {
+                "/usr/local/bin/blueutil",
+                "/opt/homebrew/bin/blueutil",
+                "/usr/bin/blueutil"
+            };
+
+            foreach (var path in possiblePaths)
+            {
+                if (File.Exists(path))
+                    return path;
+            }
+
+            return null;
+        }
+
         public async Task<bool> IsBluetoothEnabledAsync()
         {
             try
             {
                 _logger.Debug("Checking Bluetooth status on macOS");
 
-                // Use blueutil if available, otherwise use system_profiler
-                var blueutil = await RunCommandAsync("/usr/local/bin/blueutil", "-p");
-                if (!string.IsNullOrEmpty(blueutil) && blueutil.Trim() == "1")
+                // Try using blueutil if available
+                var blueutilPath = FindBlueutilPath();
+                if (!string.IsNullOrEmpty(blueutilPath))
                 {
-                    _logger.Information("Bluetooth is enabled (via blueutil)");
+                    var blueutilOutput = await RunCommandAsync("/bin/bash", $"-c \"'{blueutilPath}' -p\"");
+                    if (!string.IsNullOrEmpty(blueutilOutput))
+                    {
+                        var isEnabled = blueutilOutput.Trim() == "1";
+                        _logger.Information("Bluetooth is {Status} (via blueutil)", isEnabled ? "enabled" : "disabled");
+                        return isEnabled;
+                    }
+                }
+
+                // Fallback to ioreg
+                var ioregResult = await RunCommandAsync("/bin/bash", "-c \"/usr/sbin/ioreg -r -k State -n IOBluetoothHCIController\"");
+                if (!string.IsNullOrEmpty(ioregResult))
+                {
+                    if (ioregResult.Contains("\"State\" = 1") || ioregResult.Contains("State = 1"))
+                    {
+                        _logger.Information("Bluetooth is enabled (via ioreg)");
+                        return true;
+                    }
+                    else if (ioregResult.Contains("\"State\" = 0") || ioregResult.Contains("State = 0"))
+                    {
+                        _logger.Information("Bluetooth is disabled (via ioreg)");
+                        return false;
+                    }
+                }
+
+                // Final fallback to system_profiler
+                var result = await RunCommandAsync("/bin/bash", "-c \"/usr/sbin/system_profiler SPBluetoothDataType\"");
+                _logger.Debug("system_profiler output: {Output}", result);
+
+                if (result.Contains("State: On", StringComparison.OrdinalIgnoreCase) ||
+                    result.Contains("Bluetooth Power: On", StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.Information("Bluetooth is enabled (via system_profiler)");
                     return true;
                 }
 
-                // Fallback to system_profiler
-                var result = await RunCommandAsync("/usr/sbin/system_profiler", "SPBluetoothDataType");
-
-                if (result.Contains("Bluetooth Power: On", StringComparison.OrdinalIgnoreCase))
-                {
-                    _logger.Information("Bluetooth is enabled");
-                    return true;
-                }
-
-                _logger.Information("Bluetooth is disabled");
+                _logger.Information("Bluetooth appears to be disabled");
                 return false;
             }
             catch (Exception ex)
@@ -51,11 +92,7 @@ namespace ITAdmin.Maui.Services
             {
                 _logger.Debug("Checking USB status on macOS");
 
-                // Check USB devices using system_profiler
-                var result = await RunCommandAsync("/usr/sbin/system_profiler", "SPUSBDataType");
-
-                // If we can enumerate USB devices, USB is enabled
-                // Look for USB controller information
+                var result = await RunCommandAsync("/bin/bash", "-c \"/usr/sbin/system_profiler SPUSBDataType\"");
                 if (result.Contains("USB Bus", StringComparison.OrdinalIgnoreCase) ||
                     result.Contains("USB Controller", StringComparison.OrdinalIgnoreCase))
                 {
@@ -63,8 +100,7 @@ namespace ITAdmin.Maui.Services
                     return true;
                 }
 
-                // Additional check: see if any USB devices are connected
-                var ioregResult = await RunCommandAsync("/usr/sbin/ioreg", "-p IOUSB");
+                var ioregResult = await RunCommandAsync("/bin/bash", "-c \"/usr/sbin/ioreg -p IOUSB\"");
                 if (!string.IsNullOrEmpty(ioregResult) && ioregResult.Contains("+-o"))
                 {
                     _logger.Information("USB is enabled (devices detected)");
@@ -77,8 +113,7 @@ namespace ITAdmin.Maui.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error checking USB status");
-                // Assume USB is enabled if we can't check
-                return true;
+                return true; // Assume enabled if uncertain
             }
         }
 
@@ -88,9 +123,7 @@ namespace ITAdmin.Maui.Services
             {
                 _logger.Debug("Checking Firewall status on macOS");
 
-                // Check application firewall status
-                var result = await RunCommandAsync("/usr/libexec/ApplicationFirewall/socketfilterfw", "--getglobalstate");
-
+                var result = await RunCommandAsync("/bin/bash", "-c \"/usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate\"");
                 if (result.Contains("enabled", StringComparison.OrdinalIgnoreCase))
                 {
                     _logger.Information("Firewall is enabled");
@@ -102,12 +135,10 @@ namespace ITAdmin.Maui.Services
                     return false;
                 }
 
-                // Alternative check using defaults
-                var defaultsResult = await RunCommandAsync("/usr/bin/defaults", "read /Library/Preferences/com.apple.alf globalstate");
+                var defaultsResult = await RunCommandAsync("/bin/bash", "-c \"/usr/bin/defaults read /Library/Preferences/com.apple.alf globalstate\"");
                 if (!string.IsNullOrEmpty(defaultsResult))
                 {
                     var state = defaultsResult.Trim();
-                    // 0 = off, 1 = on for specific services, 2 = on for essential services
                     var isEnabled = state == "1" || state == "2";
                     _logger.Information("Firewall is {Status} (state: {State})",
                         isEnabled ? "enabled" : "disabled", state);
@@ -161,8 +192,7 @@ namespace ITAdmin.Maui.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Failed to run command {Command} {Arguments}",
-                    command, arguments);
+                _logger.Error(ex, "Failed to run command {Command} {Arguments}", command, arguments);
                 return string.Empty;
             }
         }

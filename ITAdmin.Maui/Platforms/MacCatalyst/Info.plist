@@ -11,6 +11,14 @@
     <!-- Please consult https://developer.apple.com/documentation/bundleresources/information_property_list/lsapplicationcategorytype -->
     <!-- <key>LSApplicationCategoryType</key> -->
     <!-- <string>public.app-category.YOUR-CATEGORY-HERE</string> -->
+    
+    <!-- Bluetooth usage descriptions -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>IT Admin Utility needs Bluetooth access to manage and monitor network devices and system components.</string>
+    
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>IT Admin Utility needs Bluetooth access to manage and monitor network devices and system components.</string>
+    
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>2</integer>
